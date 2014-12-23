@@ -16,6 +16,7 @@
  - Blink dot when preset is saved.
  -Shows momentary (1 sec) letters L,P,E on the 7 segment display to indicate the mode.
  -Use shift registers for both outputing to relays and to change the 7 segment LED bank number.
+ -Clear saved presets by pressing and holding BNK down and button 1
  
  -------------------------------- Missing Features ----------------------------------
  
@@ -227,6 +228,8 @@ void onHold(ButtonInformation* Sender) {//Save a preset if on edit mode
     //Clear selection for a new preset to be saved
     clearLoopSelection();
   }
+  
+  clearPresets();//Called when BANK Down and Button1 are held.
 
 }
 

@@ -8,7 +8,9 @@
 
 */
 void bankChange(){//onUp
-
+      
+      if(BD && BUTTON1)return;
+      
      //Bank Up or Down - Change Bank first checking that MODE hasn't changed
      if(BU && MODE_HAS_CHANGED ==false && LOOP8_HAS_CHANGED ==false /*&& MODE != LOOP_MODE*/){
        BANK_IDX =(++BANK_IDX)%BANK_MAX;
@@ -65,6 +67,18 @@ void modeChange(){//onDown
 //     hasPresetBeenSaved = false;
 //     Serial.println("Mode has changed: ");Serial.println(MODE_HAS_CHANGED);
      
+}
+
+void clearPresets(){//On hold
+  
+  if(BD && BUTTON1){
+    
+    for (int i = 0; i < 512; i++)
+      EEPROM.write(i, 0); 
+      
+      Serial.println("Presets erased");
+  }
+  
 }
 
 void setWritePresetAddress(int pin){// on hold
