@@ -33,6 +33,9 @@ void bankChange(){//onUp
        
 }
 void modeChange(){//onDown
+     
+     MODE_HAS_CHANGED =false;
+
      if(BD & BU){
          MODE_HAS_CHANGED= true;
          MODE++;
@@ -44,7 +47,6 @@ void modeChange(){//onDown
 
      
      }else if(BD | BU){ 
-       MODE_HAS_CHANGED =false;
        hasPresetBeenToggled = false;
      }
      

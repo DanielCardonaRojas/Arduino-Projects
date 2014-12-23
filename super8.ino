@@ -1,41 +1,41 @@
 
 /* 
-Super8 stompbox relay switcher Sketch by Daniel Cardona Rojas 2014
-
-  -------------------------------------- Features --------------------------------------------
--Write presets to EEPROM in banks of 8 presets: 1rst bank [1 8] 2nd bank [9 16] etc.
--Have three state program: preset mode, loop mode and edit mode (Choose a mecanism to enter each state)
--Has to implement 2 button press and hold event for saving to impair presets
--Use analog pins 0-5 as digital footswitch inputs. Have a LED status current activated preset.
--Have Led status of current loops activated in preset.
--Only one preset must be on at a time so if on is selected others have to be negated
--store a preset in a by using bitwise operators
--Preset 5,6,7,8 doing doble press on (1,2),(2,3),(3,4),(4,ST)....
--BnkUp and BnkDown simultaneous press changes mode.
--Blink bank number until preset is selected i.e dont change preset even though bank has changed.
-- Blink dot when preset is saved.
--Shows momentary (1 sec) letters L,P,E on the 7 segment display to indicate the mode.
--Use shift registers for both outputing to relays and to change the 7 segment LED bank number.
-
-  -------------------------------- Missing Features ----------------------------------
+ Super8 stompbox relay switcher Sketch by Daniel Cardona Rojas 2014
+ 
+ -------------------------------------- Features --------------------------------------------
+ -Write presets to EEPROM in banks of 8 presets: 1rst bank [1 8] 2nd bank [9 16] etc.
+ -Have three state program: preset mode, loop mode and edit mode (Choose a mecanism to enter each state)
+ -Has to implement 2 button press and hold event for saving to impair presets
+ -Use analog pins 0-5 as digital footswitch inputs. Have a LED status current activated preset.
+ -Have Led status of current loops activated in preset.
+ -Only one preset must be on at a time so if on is selected others have to be negated
+ -store a preset in a by using bitwise operators
+ -Preset 5,6,7,8 doing doble press on (1,2),(2,3),(3,4),(4,ST)....
+ -BnkUp and BnkDown simultaneous press changes mode.
+ -Blink bank number until preset is selected i.e dont change preset even though bank has changed.
+ - Blink dot when preset is saved.
+ -Shows momentary (1 sec) letters L,P,E on the 7 segment display to indicate the mode.
+ -Use shift registers for both outputing to relays and to change the 7 segment LED bank number.
+ 
+ -------------------------------- Missing Features ----------------------------------
  
  - Mute output. If no preset or loop is selected this defaults to bypass all loops. 
-  It could be acomplished using a tuner after the Super8 switcher.
+ It could be acomplished using a tuner after the Super8 switcher.
  - Output exclusive for tuner. 
  - Buffered input. 
  
  ------------------------------------- Notes -----------------------------------------
  - Unedited presets default to all loops on. Because EEPROM comes with 255 written in by deafult.
-
-
-
+ 
+ 
+ 
  ------------------------------- Basic Layout of buttons -----------------------------
-
-                          BnkUp ^ -
-  P1 --- P2 --- P3 -- P4          I Mode
-                          BnkDn v -
-                          
-*/
+ 
+ BnkUp ^ -
+ P1 --- P2 --- P3 -- P4          I Mode
+ BnkDn v -
+ 
+ */
 //#include "declarations.h"
 #include <ButtonEvent.h>
 #include <EEPROM.h>
@@ -95,8 +95,10 @@ boolean hasPresetBeenToggled = false;
 boolean hasAltPresetBeenToggled = false;//Refering to presets 5,6,7,8
 //numbering LEDs starting from the top (1) in clockwise direction 7nth segment is middle.
 //Use ~ to negate bits in case display is common anode or cathode
-byte BANK_DISPLAY[5]={6,91,79,102,0}; 
-byte MODE_DISPLAY[3]={121,115,56};//E,P,L
+byte BANK_DISPLAY[5]={
+  6,91,79,102,0}; 
+byte MODE_DISPLAY[3]={
+  121,115,56};//E,P,L
 
 /*--------------Function Prototypes ----------------- */
 void editModeSelection(int pin);
@@ -114,7 +116,7 @@ int timerId2;
 void setup() {
   int i;
   for(i=1;i< 9;i++){
-  pinMode(i,OUTPUT);
+    pinMode(i,OUTPUT);
   }
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
@@ -130,9 +132,9 @@ void setup() {
   timerId = timer.setInterval(500,displayMode);
   timerId2 = timer.setInterval(500,displayBank);
   timer.disable(timerId);
-  
+
   Serial.begin(9600);
-  
+
 }
 
 /* -------------------- Loop -----------------------*/
@@ -141,66 +143,67 @@ void loop() {
   timer.run();
 
 
-  
+
 }
 
 /* --------   Button Event Callbacks --------*/
 void onDown(ButtonInformation* Sender) {
- 
+
   // Serial.print("On Down with sender: ");Serial.println(Sender->pin);
   buttonLogic(Sender->pin,true);
-  
+
   //Change Mode Pressing Bank Up and Down Buttons at same time
   //Disable Bank Up and Down when both are pressed  
   modeChange();
   switch (MODE){
-   case PRESET_MODE:
-     doublePressPresetModeSelection();
-   break;
-   
-   case EDIT_MODE:
-   case LOOP_MODE:
-       doublePressEditAndLoopModeSelection();
+  case PRESET_MODE:
+    doublePressPresetModeSelection();
+    break;
 
-   break;
-   
-    
+  case EDIT_MODE:
+  case LOOP_MODE:
+    doublePressEditAndLoopModeSelection();
+
+    break;
+
+
   }
-    
+
 }
 
 void onUp(ButtonInformation* Sender) {
-  
 
 
-     //Bank Up or Down - Change Bank first checking that MODE hasn't changed
-     //If Bank has changed retrigger preset
-      bankChange();
-      buttonLogic(Sender->pin,false);//not shure if this should before or after the switch
 
-//----------- Selection modes --------------
+  //Bank Up or Down - Change Bank first checking that MODE hasn't changed
+  //If Bank has changed retrigger preset
+  bankChange();
+  buttonLogic(Sender->pin,false);//not shure if this should before or after the switch
+
+  //----------- Selection modes --------------
   boolean isAltPresetCurrentlySelected = LOOP5_HAS_CHANGED || LOOP6_HAS_CHANGED || LOOP7_HAS_CHANGED || LOOP8_HAS_CHANGED;
-   
-   switch (MODE){
-     case PRESET_MODE: 
-           presetModeSelection(Sender->pin);
-     break;
-     case EDIT_MODE:
-           if(!hasPresetBeenSaved){
-             //Serial.println("No preset saved");
-             editModeSelection(Sender->pin); 
-           }else {
-           }
-     break;
-     case LOOP_MODE:
-           loopModeSelection(Sender->pin);
-          shiftOutLoopModeSelection(); 
-     break;       
-   }
- 
-   hasPresetBeenSaved = false;
-  
-      
+
+  switch (MODE){
+  case PRESET_MODE: 
+    presetModeSelection(Sender->pin);
+    break;
+  case EDIT_MODE:
+    if(!hasPresetBeenSaved){
+      //Serial.println("No preset saved");
+      editModeSelection(Sender->pin); 
+    }
+    else {
+    }
+    break;
+  case LOOP_MODE:
+    loopModeSelection(Sender->pin);
+    shiftOutLoopModeSelection(); 
+    break;       
+  }
+
+  hasPresetBeenSaved = false;
+
+
 
 
 }
@@ -208,26 +211,27 @@ void onUp(ButtonInformation* Sender) {
 void onHold(ButtonInformation* Sender) {//Save a preset if on edit mode
   //Serial.print("On hold with sender: ");Serial.println(Sender->pin);
   if(MODE == EDIT_MODE){
-    
+
     setWritePresetAddress(Sender->pin);
     //If preset 5,6,7 or 8 are long pressed dont count in saved selection    
 
-    doublePressEditAndLoopModeSelection();
+      doublePressEditAndLoopModeSelection();
     hasPresetBeenSaved = true;
-    
+
     // How to garantee bitmaskwrite onley gets called once? when double press and hold
     if(hasElapsedTimeInterval(100)){
-          bitmaskWrite(); 
+      bitmaskWrite(); 
 
     }
 
     //Clear selection for a new preset to be saved
     clearLoopSelection();
-    }
+  }
 
 }
 
 void onDouble(ButtonInformation* Sender) {
 
 }
+
 

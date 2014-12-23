@@ -5,8 +5,6 @@
 */
 void presetModeSelection(int pin){//called on button up
 
-  if(MODE_HAS_CHANGED) return;
-
   switch(pin){
     case P1B:
      if(!LOOP5_HAS_CHANGED){
