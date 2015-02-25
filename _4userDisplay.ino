@@ -84,6 +84,25 @@ void displayMode(){
  
   
 }
+
+//Display Preset LED 
+
+void displayPreset() {
+   byte preset = (LOOP1 << 0)|(LOOP2 << 1)|(LOOP3 << 2)|(LOOP4 << 3)|(LOOP5 << 4)|(LOOP6 << 5)|(LOOP7 << 6)|(LOOP8 << 7);
+   
+  int presetLEDpins[8] = {P1_LED_PIN,P2_LED_PIN,P3_LED_PIN,P4_LED_PIN,
+                          P5_LED_PIN,P6_LED_PIN,P7_LED_PIN,P8_LED_PIN};
+  int k;
+    
+  for (k =0 ; k < 8; k++ ){
+    // bit_fld & (1<<n) checks if bit at position n is on in bit_fld.
+    if (preset & (1 << k)) digitalWrite(k, HIGH);
+    else digitalWrite(k,LOW);
+    
+  }
+  
+   
+}
 //Blink selection LED when preset stored
 
 void blinkLEDs(byte preset, int time){

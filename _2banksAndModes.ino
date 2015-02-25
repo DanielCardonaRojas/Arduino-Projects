@@ -43,9 +43,9 @@ void modeChange(){//onDown
          MODE++;
          MODE = MODE % 3;
 
-         if(MODE ==PRESET_MODE){Serial.println("Preset Mode");}    
-         if(MODE ==EDIT_MODE) { Serial.println("Edit Mode");bypassAllLoops();}
-         if(MODE ==LOOP_MODE) {Serial.println("Loop Mode"); bypassAllLoops();}
+         if(MODE == PRESET_MODE){Serial.println("Preset Mode");}    
+         if(MODE == EDIT_MODE) { Serial.println("Edit Mode");bypassAllLoops();}
+         if(MODE == LOOP_MODE) {Serial.println("Loop Mode"); bypassAllLoops();}
 
      
      }else if(BD | BU){ 

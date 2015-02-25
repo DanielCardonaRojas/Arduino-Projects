@@ -40,28 +40,6 @@ void bitmaskRead(){//replace with bitRead()
   
 }
 
-/*------------------- Mode display --------------------*/
-
-//void displayMode(){
-//
-//  digitalWrite(PRESET_PIN,LOW);
-//  digitalWrite(LOOP_PIN,LOW);
-//  digitalWrite(EDIT_PIN,LOW);
-//  switch(MODE){
-//    case PRESET_MODE:
-//     digitalWrite(PRESET_PIN,HIGH); 
-//    break;
-//    case EDIT_MODE:
-//      digitalWrite(EDIT_PIN,HIGH);
-//    break;
-//    case LOOP_MODE:
-//      digitalWrite(LOOP_PIN,HIGH);
-//    break;    
-//  }
-//
-//
-//}
-
 
 /*-------- Shift out loop selection in Loop mode ----------*/
 

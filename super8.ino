@@ -42,7 +42,7 @@
 #include <EEPROM.h>
 #include <SimpleTimer.h>
 
-/*--------Preset, Loop pins and mode Pins */
+/*-------- Push button pins ------------- */
 //Pins 1 through 9 are for loop relays 
 #define P1B 14
 #define P2B 15
@@ -50,13 +50,19 @@
 #define P4B 17
 #define BNK_U 18
 #define BNK_D 19
-#define L1 5
-#define L2 4
-#define L3 3
-#define L4 2
-#define PRESET_PIN 2
-#define EDIT_PIN 3
-#define LOOP_PIN 4
+
+
+/* ----------------Preset LED pins from take from eagle ---------- */
+#define P1_LED_PIN 1
+#define P2_LED_PIN 2
+#define P3_LED_PIN 3
+#define P4_LED_PIN 4
+#define P5_LED_PIN 5
+#define P6_LED_PIN 6
+#define P7_LED_PIN 7
+#define P8_LED_PIN 8
+
+
 /*----------------- Operation Modes ------------------ */
 #define EDIT_MODE 0
 #define PRESET_MODE 1
